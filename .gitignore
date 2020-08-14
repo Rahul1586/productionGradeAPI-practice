@@ -5,3 +5,5 @@
 /.vs
 /ProductionGrade/.vs/ProductionGrade/v16
 /ProductionGrade/API/obj
+/ProductionGrade/.vs/ProductionGrade
+/ProductionGrade/API/bin/Debug/netcoreapp3.1
