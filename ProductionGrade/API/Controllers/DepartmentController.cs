@@ -1,4 +1,5 @@
-﻿using DLL.Models;
+﻿using BLL.Services;
+using DLL.Models;
 using DLL.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,41 +11,41 @@ namespace API.Controllers
 {
     public class DepartmentController : MainApiController
     {
-        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IDepartmentService _departmentService;
 
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        public DepartmentController(IDepartmentService departmentService)
         {
-            _departmentRepository = departmentRepository;
+            _departmentService = departmentService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _departmentRepository.GetAll());
+            return Ok(await _departmentService.GetAll());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingle(int id)
         {
-            return Ok(await _departmentRepository.GetSingle(id));
+            return Ok(await _departmentService.GetSingle(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> SaveDepartment(Department dept)
         {
-            return Ok(await _departmentRepository.Insert(dept));
+            return Ok(await _departmentService.Insert(dept));
         }
 
         [HttpPut("{id}")]        
         public async Task<IActionResult> UpdateDepartment(int id, Department dept)
         {
-            return Ok(await _departmentRepository.Update(id, dept));
+            return Ok(await _departmentService.Update(id, dept));
         }
 
         [HttpDelete("{id}")]
         public async Task <IActionResult> DeleteDepartment(int id)
         {
-            return Ok(await _departmentRepository.Delete(id));
+            return Ok(await _departmentService.Delete(id));
         }
 
         //public static class DepartmentStatic
