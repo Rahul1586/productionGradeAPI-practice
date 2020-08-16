@@ -1,4 +1,5 @@
-﻿using DLL.Models;
+﻿using BLL.Services;
+using DLL.Models;
 using DLL.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,41 +11,41 @@ namespace API.Controllers
 {
     public class StudentController : MainApiController
     {
-        private readonly IStudentRepository _studentRepository;
+        private readonly IStudentService _studentService;
 
-        public StudentController(IStudentRepository studentRepository)
+        public StudentController(IStudentService studentService)
         {
-            _studentRepository = studentRepository;
+            _studentService = studentService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _studentRepository.GetAll());
+            return Ok(await _studentService.GetAll());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingle(int id)
         {
-            return Ok(await _studentRepository.GetSingle(id));
+            return Ok(await _studentService.GetSingle(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> SaveStudent(Student dept)
         {
-            return Ok(await _studentRepository.Insert(dept));
+            return Ok(await _studentService.Insert(dept));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStudent(int id, Student dept)
         {
-            return Ok(await _studentRepository.Update(id, dept));
+            return Ok(await _studentService.Update(id, dept));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
-            return Ok(await _studentRepository.Delete(id));
+            return Ok(await _studentService.Delete(id));
         }
 
         //public static class StudentStatic

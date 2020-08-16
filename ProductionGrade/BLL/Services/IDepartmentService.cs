@@ -25,9 +25,9 @@ namespace BLL.Services
             _departmentRepository = departmentRepository;
         }
 
-        public Task<Department> Delete(int id)
+        public async Task<Department> Delete(int id)
         {
-            throw new NotImplementedException();
+            return await _departmentRepository.Delete(id);
         }
 
         public async Task<List<Department>> GetAll()
