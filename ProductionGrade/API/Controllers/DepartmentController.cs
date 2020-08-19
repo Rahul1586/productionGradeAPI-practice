@@ -1,4 +1,5 @@
-﻿using BLL.Services;
+﻿using BLL.Request;
+using BLL.Services;
 using DLL.Models;
 using DLL.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -31,13 +32,13 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveDepartment(Department dept)
+        public async Task<IActionResult> SaveDepartment(DepartmentInsertRequestViewModel request)
         {
-            return Ok(await _departmentService.Insert(dept));
+            return Ok(await _departmentService.Insert(request));
         }
 
         [HttpPut("{id}")]        
-        public async Task<IActionResult> UpdateDepartment(int id, Department dept)
+        public async Task<IActionResult> UpdateDepartment(int id, DepartmentUpdateRequestViewModel dept)
         {
             return Ok(await _departmentService.Update(id, dept));
         }

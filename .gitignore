@@ -11,3 +11,5 @@
 /ProductionGrade/DLL/obj
 /ProductionGrade/BLL/bin/Debug/netcoreapp3.1
 /ProductionGrade/BLL/obj
+/ProductionGrade/Utility/bin/Debug/netcoreapp3.1
+/ProductionGrade/Utility/obj

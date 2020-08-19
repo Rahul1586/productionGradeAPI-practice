@@ -14,8 +14,12 @@ namespace DLL.Repositories
         Task<Department> Insert(Department department);
         Task<List<Department>> GetAll();
         Task<Department> GetSingle(int id);
-        Task<Department> Delete(int id);
-        Task<Department> Update(int id, Department dept);
+        Task<bool> Delete(Department dept);
+        Task<bool> Update(Department dept);
+        Task<Department> FindByCode(string code, int? id = 0);
+        Task<Department> FindByName(string name, int? id = 0);
+        Task<bool> FindByCodeForEdit(string code, int? id = 0);
+        Task<bool> FindByNameForEdit(string name, int? id = 0);
     }
 
     public class DepartmentRepository : IDepartmentRepository
@@ -45,21 +49,46 @@ namespace DLL.Repositories
             return department;
         }
 
-        public async Task<Department> Delete(int id)
+        public async Task<bool> Delete(Department dept)
         {
-            Department department = await _context.Departments.Where(x => x.DepartmentId == id).FirstOrDefaultAsync();
-            _context.Departments.Remove(department);
-            await _context.SaveChangesAsync();
-            return department;
+            _context.Departments.Remove(dept);
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public async Task<Department> Update(int id, Department dept)
+        public async Task<bool> Update(Department dept)
+        {            
+            _context.Departments.Update(dept);
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<Department> FindByCode(string code, int? id = 0)
         {
-            Department department = await _context.Departments.Where(x => x.DepartmentId == id).FirstOrDefaultAsync();
-            department.Name = dept.Name;
-            _context.Departments.Update(department);
-            await _context.SaveChangesAsync();
-            return department;
+            return await _context.Departments.Where(x => x.Code == code).FirstOrDefaultAsync();
+        }
+
+        public async Task<Department> FindByName(string name, int? id = 0)
+        {
+            return await _context.Departments.Where(x => x.Name == name).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> FindByCodeForEdit(string code, int? id = 0)
+        {
+            var deptCount = await _context.Departments.Where(x => x.Code == code && x.DepartmentId != id).CountAsync();
+            return deptCount > 0 ? true : false;
+        }
+
+        public async Task<bool> FindByNameForEdit(string name, int? id = 0)
+        {
+            var deptCount = await _context.Departments.Where(x => x.Name == name && x.DepartmentId != id).CountAsync();
+            return deptCount > 0 ? true : false;
         }
     }
 }
