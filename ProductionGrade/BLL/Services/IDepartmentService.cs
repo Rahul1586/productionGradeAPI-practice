@@ -11,15 +11,13 @@ namespace BLL.Services
 {
     public interface IDepartmentService
     {
-        Task<Department> Insert(DepartmentInsertRequestViewModel request);
+        Task<Department> Insert(DepartmentRequestViewModel request);
         Task<List<Department>> GetAll();
         Task<Department> GetSingle(int id);
         Task<Department> Delete(int id);
-        Task<Department> Update(int id, DepartmentUpdateRequestViewModel dept);
+        Task<Department> Update(int id, DepartmentRequestViewModel dept);
         Task<bool> IsCodeExist(string code, int? id = 0);
-        Task<bool> IsNameExist(string name, int? id = 0);
-        //Task<bool> IsCodeExistForEdit(int id, string code);
-        //Task<bool> IsNameExistForEdit(int id, string name);
+        Task<bool> IsNameExist(string name, int? id = 0);       
     }
 
     public class DepartmentService : IDepartmentService
@@ -33,12 +31,12 @@ namespace BLL.Services
 
         public async Task<List<Department>> GetAll()
         {
-            return await _departmentRepository.GetAll();
+            return await _departmentRepository.GetList();
         }
 
         public async Task<Department> GetSingle(int id)
         {
-            var department = await _departmentRepository.GetSingle(id);
+            var department = await _departmentRepository.FindSingleAsync(x => x.DepartmentId == id);
 
             if (department == null)
             {
@@ -47,19 +45,26 @@ namespace BLL.Services
             return department;
         }
 
-        public async Task<Department> Insert(DepartmentInsertRequestViewModel request)
+        public async Task<Department> Insert(DepartmentRequestViewModel request)
         {
             var department = new Department
             {
                 Code = request.Code,
                 Name = request.Name
             };
-            return await _departmentRepository.Insert(department);
+            await _departmentRepository.CreateAsync(department);
+
+            if(await _departmentRepository.SaveCompletedAsync())
+            {
+                return department;
+            }
+
+            throw new ApplicationValidationException("Something went wrong");
         }
 
-        public async Task<Department> Update(int id, DepartmentUpdateRequestViewModel dept)
+        public async Task<Department> Update(int id, DepartmentRequestViewModel dept)
         {
-            var department = await _departmentRepository.GetSingle(id);
+            var department = await _departmentRepository.FindSingleAsync(x => x.DepartmentId == id);
 
             if (department == null)
             {
@@ -69,7 +74,9 @@ namespace BLL.Services
             department.Code = dept.Code;
             department.Name = dept.Name;
 
-            if (await _departmentRepository.Update(department))
+            _departmentRepository.Update(department);
+
+            if (await _departmentRepository.SaveCompletedAsync())
             {
                 return department;
             }
@@ -78,14 +85,16 @@ namespace BLL.Services
 
         public async Task<Department> Delete(int id)
         {
-            var department = await _departmentRepository.GetSingle(id);
+            var department = await _departmentRepository.FindSingleAsync(x => x.DepartmentId == id);
 
             if (department == null)
             {
                 throw new ApplicationValidationException("Department Not Found");
             }
 
-            if (await _departmentRepository.Delete(department))
+            _departmentRepository.Delete(department);
+
+            if (await _departmentRepository.SaveCompletedAsync())
             {
                 return department;
             }
@@ -97,9 +106,13 @@ namespace BLL.Services
         {
             if (id != 0)
             {
-                bool isDeptPresent = await _departmentRepository.FindByCodeForEdit(code, id);
-
-                if (!isDeptPresent)
+                var department = await _departmentRepository.FindSingleAsync(x => x.Code == code && x.DepartmentId != id);
+                //if(dept.DepartmentId > 0)
+                //{
+                //    return false;
+                //}
+                //return true;
+                if (department == null)
                 {
                     return true;
                 }
@@ -108,7 +121,7 @@ namespace BLL.Services
             }
             else
             {
-                Department department = await _departmentRepository.FindByCode(code);
+                Department department = await _departmentRepository.FindSingleAsync(x => x.Code == code);
 
                 if (department == null)
                 {
@@ -123,9 +136,13 @@ namespace BLL.Services
         {
             if (id != 0)
             {
-                bool isDeptPresent = await _departmentRepository.FindByNameForEdit(name, id);
+                var department = await _departmentRepository.FindSingleAsync(x => x.Name == name && x.DepartmentId != id);
 
-                if (!isDeptPresent)
+                //if (!isDeptPresent)
+                //{
+                //    return true;
+                //}
+                if (department == null)
                 {
                     return true;
                 }
@@ -134,7 +151,7 @@ namespace BLL.Services
             }
             else
             {
-                Department department = await _departmentRepository.FindByName(name);
+                Department department = await _departmentRepository.FindSingleAsync(x => x.Name == name);
 
                 if (department == null)
                 {
@@ -144,30 +161,6 @@ namespace BLL.Services
                 return false;
             }
             
-        }
-
-        //public async Task<bool> IsCodeExistForEdit(int id, string code)
-        //{
-        //    Department department = await _departmentRepository.FindByCode(code);
-
-        //    if (department == null)
-        //    {
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
-
-        //public async Task<bool> IsNameExistForEdit(int id, string name)
-        //{
-        //    Department department = await _departmentRepository.FindByName(name);
-
-        //    if (department == null)
-        //    {
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
+        }       
     }
 }

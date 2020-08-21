@@ -32,13 +32,13 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveDepartment(DepartmentInsertRequestViewModel request)
+        public async Task<IActionResult> SaveDepartment(DepartmentRequestViewModel request)
         {
             return Ok(await _departmentService.Insert(request));
         }
 
         [HttpPut("{id}")]        
-        public async Task<IActionResult> UpdateDepartment(int id, DepartmentUpdateRequestViewModel dept)
+        public async Task<IActionResult> UpdateDepartment(int id, DepartmentRequestViewModel dept)
         {
             return Ok(await _departmentService.Update(id, dept));
         }

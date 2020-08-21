@@ -20,6 +20,8 @@ namespace DLL.Repositories
         void Delete(T entry);
         void DeleteRange(List<T> entryList);
         Task<T> FindSingleAsync(Expression<Func<T, bool>> expression);
+
+        Task<bool> SaveCompletedAsync();
     }
 
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
@@ -76,7 +78,10 @@ namespace DLL.Repositories
         {
             return await _context.Set<T>().FirstOrDefaultAsync(expression);
         }
-
-
+              
+        public async Task<bool> SaveCompletedAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }
