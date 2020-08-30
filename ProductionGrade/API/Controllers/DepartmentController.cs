@@ -1,4 +1,5 @@
-﻿using BLL.Request;
+﻿using API.Filter;
+using BLL.Request;
 using BLL.Services;
 using DLL.Models;
 using DLL.Repositories;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ViewModels.Request;
 
 namespace API.Controllers
 {
@@ -20,9 +22,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] DepartmentPaginationViewModel model)
         {
-            return Ok(await _departmentService.GetAll());
+            return Ok(await _departmentService.GetAll(model));
         }
 
         [HttpGet("{id}")]

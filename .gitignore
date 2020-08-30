@@ -13,3 +13,5 @@
 /ProductionGrade/BLL/obj
 /ProductionGrade/Utility/bin/Debug/netcoreapp3.1
 /ProductionGrade/Utility/obj
+/ProductionGrade/ViewModels/bin/Debug/netcoreapp3.1
+/ProductionGrade/ViewModels/obj
